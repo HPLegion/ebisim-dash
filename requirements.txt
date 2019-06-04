@@ -1,0 +1,8 @@
+git+git://github.com/HPLegion/ebisim#egg=ebisim
+# for dashboard
+dash
+dash-html-components
+dash-core-components
+dash-table
+# deployment
+gunicorn
