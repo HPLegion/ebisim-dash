@@ -3,14 +3,17 @@ A small dashboard for very simple ebisim simulations
 """
 
 import math
+from functools import lru_cache
 
 import dash
 from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
 
-import ebisim
 import numpy as np
+import ebisim
+
+cached_basic_sim = lru_cache(maxsize=128)(ebisim.basic_simulation)
 
 _BOOTSTRAP_CDN = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
 _DISCLAIMER = 'THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.'
@@ -81,7 +84,7 @@ app.layout = html.Div(className="container-fluid", children=[
         html.Div(className="col", children=[
             html.Label("Distribution plot time (ms)", htmlFor="ctrl_abtime"),
             dcc.Input(id="ctrl_abtime", value=100, min=0, max=200, type="number",
-                className="form-control"),
+                      className="form-control"),
             dcc.Graph(id='plot_distr', style={},),
             dcc.Graph(id='plot_highest', style={},),
         ]),
@@ -104,7 +107,7 @@ def update_csevo(z, j, e_kin, dr_fwhm, tmax, cni):
     cni = True if "Active" in cni else False
 
     try:
-        res = ebisim.basic_simulation(int(z), j, e_kin, tmax, dr_fwhm=dr_fwhm, CNI=bool(cni))
+        res = cached_basic_sim(int(z), j, e_kin, tmax, dr_fwhm=dr_fwhm, CNI=bool(cni))
     except:
         res = None
 
