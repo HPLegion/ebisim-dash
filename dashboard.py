@@ -241,7 +241,7 @@ def update_eixs(z):
     if res:
         for cs in range(res[1].shape[0]):
             data.append(
-                {"x": res[0], "y":res[1][cs, :]/1e4, "name":str(cs)+"+", "type":"line"}
+                {"x": res[0], "y":res[1][cs, :]*1e4, "name":str(cs)+"+", "type":"line"}
             )
 
     layout = {
@@ -267,7 +267,7 @@ def update_rrxs(z):
     if res:
         for cs in range(res[1].shape[0]):
             data.append(
-                {"x": res[0], "y":res[1][cs, :]/1e4, "name":str(cs)+"+", "type":"line"}
+                {"x": res[0], "y":res[1][cs, :]*1e4, "name":str(cs)+"+", "type":"line"}
             )
 
     layout = {
@@ -293,7 +293,7 @@ def update_drxs(z, fwhm):
     if res:
         for cs in range(res[1].shape[0]):
             data.append(
-                {"x": res[0], "y":res[1][cs, :]/1e4, "name":str(cs)+"+", "type":"line"}
+                {"x": res[0], "y":res[1][cs, :]*1e4, "name":str(cs)+"+", "type":"line"}
             )
 
     layout = {
