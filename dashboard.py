@@ -57,7 +57,7 @@ _SIM_CONTROLS = html.Div(className="container", children=[
             html.Label("Continuous neutral injection", htmlFor="ctrl_cni"),
             dcc.Checklist(id="ctrl_cni", options=[
                 {"label": " Activate CNI", "value": "Active"},
-            ], values=[], labelStyle={'display': 'inline-block'}, className="form-control")
+            ], value=[], labelStyle={'display': 'inline-block'}, className="form-control")
         ]),
         html.Div(className="col-md mb-3", children=[
             html.Label("Breeding time (ms)", htmlFor="ctrl_brtime"),
@@ -101,7 +101,7 @@ app.layout = html.Div(className="container-fluid", children=[
             html.Div(className="col", children=[
                 html.Label("Distribution plot time (ms)", htmlFor="ctrl_abtime"),
                 dcc.Input(id="ctrl_abtime", value=100, min=0, max=200, type="number",
-                        className="form-control", debounce=True),
+                          className="form-control", debounce=True),
                 dcc.Graph(id='plot_distr'),
                 dcc.Graph(id='plot_highest'),
             ]),
@@ -150,7 +150,7 @@ def ctrl_abtime_clip(tmax, tcur):
         Input("ctrl_energy", "value"),
         Input("ctrl_fwhm", "value"),
         Input("ctrl_brtime", "value"),
-        Input("ctrl_cni", "values")
+        Input("ctrl_cni", "value")
     ]
 )
 def update_csevo(z, j, e_kin, dr_fwhm, tmax, cni):
