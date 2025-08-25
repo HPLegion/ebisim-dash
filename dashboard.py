@@ -161,6 +161,66 @@ _SIM_CONTROLS = html.Div(
     ],
 )
 
+_BODY = html.Div(
+    className="col",
+    children=[
+        html.Div(
+            className="row",
+            children=[
+                html.Div(
+                    className="col",
+                    children=[
+                        _SIM_CONTROLS,
+                        dcc.Graph(id="plot_csevo", style={"height": 700}),
+                    ],
+                ),
+                html.Div(
+                    className="col",
+                    children=[
+                        html.Label(
+                            "Distribution plot time (ms)", htmlFor="ctrl_abtime"
+                        ),
+                        dcc.Input(
+                            id="ctrl_abtime",
+                            value=100,
+                            min=0,
+                            max=200,
+                            type="number",
+                            className="form-control",
+                            debounce=True,
+                        ),
+                        dcc.Graph(id="plot_distr", style={"height": 400}),
+                        dcc.Graph(id="plot_highest", style={"height": 400}),
+                    ],
+                ),
+            ],
+        ),
+        html.Div(
+            className="row",
+            children=[
+                html.Div(
+                    className="col-md mb-3",
+                    children=[
+                        dcc.Graph(id="plot_eixs", style={"height": 700}),
+                    ],
+                ),
+                html.Div(
+                    className="col-md mb-3",
+                    children=[
+                        dcc.Graph(id="plot_rrxs", style={"height": 700}),
+                    ],
+                ),
+                html.Div(
+                    className="col-md mb-3",
+                    children=[
+                        dcc.Graph(id="plot_drxs", style={"height": 700}),
+                    ],
+                ),
+            ],
+        ),
+    ],
+)
+
 
 #### App Instance and Layout Setting ####
 app = dash.Dash(__name__, external_stylesheets=[_BOOTSTRAP_CDN])
@@ -170,65 +230,7 @@ app.layout = html.Div(
     className="container-fluid",
     children=[
         _HEADER,
-        html.Div(
-            className="col",
-            children=[
-                html.Div(
-                    className="row",
-                    children=[
-                        html.Div(
-                            className="col",
-                            children=[
-                                _SIM_CONTROLS,
-                                dcc.Graph(id="plot_csevo", style={"height": 700}),
-                            ],
-                        ),
-                        html.Div(
-                            className="col",
-                            children=[
-                                html.Label(
-                                    "Distribution plot time (ms)", htmlFor="ctrl_abtime"
-                                ),
-                                dcc.Input(
-                                    id="ctrl_abtime",
-                                    value=100,
-                                    min=0,
-                                    max=200,
-                                    type="number",
-                                    className="form-control",
-                                    debounce=True,
-                                ),
-                                dcc.Graph(id="plot_distr", style={"height": 400}),
-                                dcc.Graph(id="plot_highest", style={"height": 400}),
-                            ],
-                        ),
-                    ],
-                ),
-                html.Div(
-                    className="row",
-                    children=[
-                        html.Div(
-                            className="col-md mb-3",
-                            children=[
-                                dcc.Graph(id="plot_eixs", style={"height": 700}),
-                            ],
-                        ),
-                        html.Div(
-                            className="col-md mb-3",
-                            children=[
-                                dcc.Graph(id="plot_rrxs", style={"height": 700}),
-                            ],
-                        ),
-                        html.Div(
-                            className="col-md mb-3",
-                            children=[
-                                dcc.Graph(id="plot_drxs", style={"height": 700}),
-                            ],
-                        ),
-                    ],
-                ),
-            ],
-        ),
+        _BODY,
         _FOOTER,
     ],
 )
@@ -293,8 +295,12 @@ def update_csevo(z, j, e_kin, dr_fwhm, tmax, cni):
     layout = {
         "title": "Charge state evolution",
         "template": "plotly_dark",
-        "xaxis": {"title": "Time (s)", "type": "log", "range": [lowlim, highlim]},
-        "yaxis": {"title": "Relative abundance"},
+        "xaxis": {
+            "title": {"text": "Time (s)"},
+            "type": "log",
+            "range": [lowlim, highlim],
+        },
+        "yaxis": {"title": {"text": "Relative abundance"}},
     }
 
     return {"data": data, "layout": layout}
@@ -316,10 +322,8 @@ def update_distr(csevo, time):
     layout = {
         "title": f"Charge state distribution at t = {1000*time:.0f} ms",
         "template": "plotly_dark",
-        "xaxis": {"title": "Charge state", "range": [0, len(distr)]},
-        "yaxis": {
-            "title": "Abdundance",
-        },
+        "xaxis": {"title": {"text": "Charge state"}, "range": [0, len(distr)]},
+        "yaxis": {"title": {"text": "Abdundance"}},
     }
 
     return {"data": data, "layout": layout}
@@ -335,8 +339,8 @@ def update_highest(csevo):
     layout = {
         "title": "Time of largest abundance",
         "template": "plotly_dark",
-        "xaxis": {"title": "Charge state", "range": [0, len(tmax)]},
-        "yaxis": {"title": "Time (s)", "type": "log"},
+        "xaxis": {"title": {"text": "Charge state"}, "range": [0, len(tmax)]},
+        "yaxis": {"title": {"text": "Time (s)"}, "type": "log"},
     }
 
     return {"data": data, "layout": layout}
@@ -364,8 +368,8 @@ def update_eixs(z):
     layout = {
         "title": "Electron ionisation cross sections",
         "template": "plotly_dark",
-        "xaxis": {"title": "Electron energy (eV)", "type": "log"},
-        "yaxis": {"title": "Cross section (cm^2)", "type": "log"},
+        "xaxis": {"title": {"text": "Electron energy (eV)"}, "type": "log"},
+        "yaxis": {"title": {"text": "Cross section (cm^2)"}, "type": "log"},
     }
 
     return {"data": data, "layout": layout}
@@ -393,8 +397,8 @@ def update_rrxs(z):
     layout = {
         "title": "Radiative recombination cross sections",
         "template": "plotly_dark",
-        "xaxis": {"title": "Electron energy (eV)", "type": "log"},
-        "yaxis": {"title": "Cross section (cm^2)", "type": "log"},
+        "xaxis": {"title": {"text": "Electron energy (eV)"}, "type": "log"},
+        "yaxis": {"title": {"text": "Cross section (cm^2)"}, "type": "log"},
     }
 
     return {"data": data, "layout": layout}
@@ -425,8 +429,8 @@ def update_drxs(z, fwhm):
     layout = {
         "title": "Dielectronic recombination cross sections",
         "template": "plotly_dark",
-        "xaxis": {"title": "Electron energy (eV)"},
-        "yaxis": {"title": "Cross section (cm^2)"},
+        "xaxis": {"title": {"text": "Electron energy (eV)"}},
+        "yaxis": {"title": {"text": "Cross section (cm^2)"}},
     }
 
     return {"data": data, "layout": layout}
