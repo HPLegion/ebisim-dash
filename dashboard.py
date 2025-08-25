@@ -7,8 +7,7 @@ from functools import lru_cache
 
 import dash
 from dash.dependencies import Input, Output, State
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc, html
 
 import numpy as np
 import ebisim
@@ -16,13 +15,16 @@ import ebisim
 #### Helper functions ####
 cached_get_element = lru_cache(maxsize=128)(ebisim.get_element)
 cached_basic_sim = lru_cache(maxsize=128)(ebisim.basic_simulation)
-lru_cache(maxsize=128)
+
+@lru_cache(maxsize=128)
 def cached_eixs(z, n=500):
     return ebisim.eixs_energyscan(cached_get_element(z), n=n)
-lru_cache(maxsize=128)
+
+@lru_cache(maxsize=128)
 def cached_rrxs(z, n=500):
     return ebisim.rrxs_energyscan(cached_get_element(z), n=n)
-lru_cache(maxsize=128)
+
+@lru_cache(maxsize=128)
 def cached_drxs(z, fwhm, n=500):
     return ebisim.drxs_energyscan(cached_get_element(z), fwhm, n=n)
 
@@ -102,8 +104,8 @@ app.layout = html.Div(className="container-fluid", children=[
                 html.Label("Distribution plot time (ms)", htmlFor="ctrl_abtime"),
                 dcc.Input(id="ctrl_abtime", value=100, min=0, max=200, type="number",
                           className="form-control", debounce=True),
-                dcc.Graph(id='plot_distr'),
-                dcc.Graph(id='plot_highest'),
+                dcc.Graph(id='plot_distr', style={"height":400}),
+                dcc.Graph(id='plot_highest', style={"height":400}),
             ]),
         ]),
         html.Div(className="row", children=[
